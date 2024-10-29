@@ -1,0 +1,33 @@
+# cf. https://zenn.dev/ymasaoka/articles/get-started-with-apache-airflow
+#     https://airflow.apache.org/docs/apache-airflow/stable/start.html
+#     https://github.com/apache/airflow
+
+volumes:
+  airflow:
+    name: airflow
+
+networks:
+  default:
+    name: airflow
+
+services:
+  airflow:
+#   image: apache/airflow:slim-2.10.2-python3.12
+    image: itaru2622/airflow:slim-2.10.2-python3.12
+    container_name: airflow
+    build:
+      args:
+        - http_proxy=${http_proxy}
+        - https_proxy=${https_proxy}
+      context: .
+    ports:
+      - 8888:8080
+    entrypoint: ''
+    environment:
+      - ADMIN_PASS=${ADMIN_PASS:-admin}
+    command: bash -c "airflow db migrate && airflow users create --username admin --password $${ADMIN_PASS} --role Admin --email admin@example.com --firstname admin  --lastname airflow && airflow standalone"
+    #  airflow db migrate
+    #  airflow users create --username admin --password $${ADMIN_PASS} --role Admin --email admin@example.com --firstname admin  --lastname airflow
+    #  airflow standalone
+    volumes:
+      - airflow:/opt/airflow
