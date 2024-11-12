@@ -9,5 +9,6 @@ RUN  echo "set mouse-=a" > /root/.vimrc; \
      chown airflow /home/airflow/.vimrc
 
 USER airflow
+RUN  pip install openai langchain langchain_openai pydantic
 #ENTRYPOINT []
 #CMD []
